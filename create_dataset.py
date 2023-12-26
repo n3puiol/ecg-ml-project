@@ -55,6 +55,7 @@ class MitDBDataset:
                     datalabel[feature1].append(y)
                     datadict[feature0].append(signals0[start:end])
                     datadict[feature1].append(signals1[start:end])
+
         self.save_dataset(datalabel, datadict)
 
     def save_dataset(self, datalabel, datadict):
@@ -63,15 +64,35 @@ class MitDBDataset:
             hf.create_dataset(feature + '_data', data=datadict[feature])
             hf.create_dataset(feature + '_label', data=datalabel[feature])
 
-    def load_dataset(self):
+    def load_dataset(self, feature='MLII'):
+        # trainData = ddio.load('dataset/train.hdf5')
+        # testlabelData= ddio.load('dataset/trainlabel.hdf5')
+        # X = np.float32(trainData[feature])
+        # y = np.float32(testlabelData[feature])
+        # att = np.concatenate((X,y), axis=1)
+        # np.random.shuffle(att)
+        # X , y = att[:,:input_size], att[:, input_size:]
+        # valData = ddio.load('dataset/test.hdf5')
+        # vallabelData= ddio.load('dataset/testlabel.hdf5')
+        # Xval = np.float32(valData[feature])
+        # yval = np.float32(vallabelData[feature])
+        # return (X, y, Xval, yval)
         hf = h5py.File(self.path + 'dataset.hdf5', 'r')
-        data = dict()
-        label = dict()
-        for feature in self.FEATURES:
-            data[feature] = hf[feature + '_data'][:]
-            label[feature] = hf[feature + '_label'][:]
+        data = hf[feature + '_data'][:]
+        label = hf[feature + '_label'][:]
+        X = np.float32(data)
+        y = np.float32(label)
+        att = np.concatenate((X, y), axis=1)
+        np.random.shuffle(att)
+        X, y = att[:, :self.INPUT_SIZE], att[:, self.INPUT_SIZE:]
         hf.close()
-        return data, label
+        return X, y
+        # data = dict()
+        # label = dict()
+        # for feature in self.FEATURES:
+        #     data[feature] = hf[feature + '_data'][:]
+        #     label[feature] = hf[feature + '_label'][:]
+        # return data, label
 
 
 if __name__ == "__main__":
