@@ -3,8 +3,11 @@ from keras.models import Model
 from keras.layers import Input, Conv1D, Dense, add, Flatten, Dropout, MaxPooling1D, Activation, BatchNormalization, \
     Lambda
 from keras import backend as K
-from keras.optimizers import Adam
+from keras.optimizers.legacy import Adam
 from keras.src.layers import TimeDistributed
+# import tensorflow as tf
+
+# tf.config.set_visible_devices([], 'GPU')
 
 
 class BaselineModel:
@@ -107,11 +110,12 @@ class BaselineModel:
         layer = BatchNormalization()(layer)
         layer = Activation('relu')(layer)
         # layer = Flatten()(layer)
-        outputs = TimeDistributed(Dense(len(self.classes), activation='softmax'))(layer)
+        dense = Dense(len(self.classes), activation='softmax')
+        outputs = TimeDistributed(dense)(layer)
         model = Model(inputs=inputs, outputs=outputs)
-        adam = Adam(lr=0.1, beta_1=0.9, beta_2=0.999, epsilon=None, amsgrad=False)
+        adam = Adam(learning_rate=0.1, beta_1=0.9, beta_2=0.999, epsilon=None, amsgrad=False)
         model.compile(optimizer=adam,
                       loss='categorical_crossentropy',
                       metrics=['accuracy'])
-        model.summary()
+        # model.summary()
         return model
