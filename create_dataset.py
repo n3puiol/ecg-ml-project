@@ -18,9 +18,7 @@ class MitDBDataset:
         self.INPUT_SIZE = 256
         self.TRAIN_SET = [x for x in self.NUMS if x not in self.TEST_SET]
         self.path = path
-        if load:
-            self.load_dataset()
-        else:
+        if not load:
             self.create_dataset()
 
     def create_dataset(self):
