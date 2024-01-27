@@ -3,20 +3,9 @@ import numpy as np
 from tensorflow.keras.callbacks import EarlyStopping, TensorBoard, ReduceLROnPlateau, ModelCheckpoint
 
 from baseline_model import BaselineModel
+from config import Config
 from create_dataset import MitDBDataset
 from el_giga_model import ElGigaModel
-
-
-class Config:
-    def __init__(self):
-        self.input_size = 256
-        self.feature = "MLII"
-        self.filter_length = 32
-        self.kernel_size = 16
-        self.drop_rate = 0.2
-        self.epochs = 10
-        self.batch = 256
-        self.patience = 10
 
 
 def train():
