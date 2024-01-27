@@ -12,15 +12,14 @@ class ElGigaModel:
         self.FILTER_LENGTH = config.filter_length
         self.KERNEL_SIZE = config.kernel_size
         self.DROP_RATE = config.drop_rate
-
-        self.classes = ['N', 'V', '/', 'A', 'F', '~']
+        self.CLASSES = config.classes
 
     def build(self):
         model = Sequential([
             Input(shape=(self.INPUT_SIZE, 1), name='input'),
-            SimpleRNN(128, input_shape=(len(self.classes), 1), return_sequences=True),
+            SimpleRNN(128, input_shape=(len(self.CLASSES), 1), return_sequences=True),
             SimpleRNN(128),
-            Dense(len(self.classes), activation='softmax'),
+            Dense(len(self.CLASSES), activation='softmax'),
         ])
 
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
