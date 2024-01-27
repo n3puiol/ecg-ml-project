@@ -41,7 +41,6 @@ In order to train the model, you first need to prepare the data.
 This can be done by running the following command (this takes a while):
 
 ```bash
-```bash
 python create_dataset.py
 ```
 
