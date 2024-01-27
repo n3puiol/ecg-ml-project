@@ -21,9 +21,10 @@ class BaselineModel:
         self.FILTER_LENGTH = config.filter_length
         self.KERNEL_SIZE = config.kernel_size
         self.DROP_RATE = config.drop_rate
+        self.CLASSES = config.classes
 
-        self.classes = ['N', 'V', '/', 'A', 'F',
-                        '~']  # ,'L','R',f','j','E','a']#,'J','Q','e','S'] are too few or not in the trainset, so excluded out
+        # self.CLASSES = ['N', 'V', '/', 'A', 'F',
+        #                 '~']  # ,'L','R',f','j','E','a']#,'J','Q','e','S'] are too few or not in the trainset, so excluded out
 
     def build(self):
         inputs = Input(shape=(self.INPUT_SIZE, 1), name='input')
@@ -107,7 +108,7 @@ class BaselineModel:
         layer = BatchNormalization()(layer)
         layer = Activation('relu')(layer)
         # layer = Flatten()(layer)
-        dense = Dense(len(self.classes), activation='softmax')
+        dense = Dense(len(self.CLASSES), activation='softmax')
         outputs = TimeDistributed(dense)(layer)
         model = Model(inputs=inputs, outputs=outputs)
         adam = Adam(learning_rate=0.1, beta_1=0.9, beta_2=0.999, epsilon=None, amsgrad=False)
