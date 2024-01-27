@@ -1,9 +1,9 @@
 from keras import Input, Sequential
 from tensorflow.keras.layers import SimpleRNN, Dense, BatchNormalization
 
-# import tensorflow as tf
-#
-# tf.config.set_visible_devices([], 'GPU')
+import tensorflow as tf
+
+tf.config.set_visible_devices([], 'GPU')
 
 
 class ElGigaModel:
@@ -19,12 +19,8 @@ class ElGigaModel:
         model = Sequential([
             Input(shape=(self.INPUT_SIZE, 1), name='input'),
             SimpleRNN(128, input_shape=(len(self.classes), 1), return_sequences=True),
-            # SimpleRNN(64, return_sequences=True),
-            # SimpleRNN(32, return_sequences=True),
             SimpleRNN(128),
             Dense(len(self.classes), activation='softmax'),
-            # BatchNormalization(),
-            # Reshape((1, -1))
         ])
 
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
