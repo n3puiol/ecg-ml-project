@@ -5,9 +5,6 @@ from keras.layers import Input, Conv1D, Dense, add, Flatten, Dropout, MaxPooling
 from keras import backend as K
 from keras.optimizers.legacy import Adam
 from keras.src.layers import TimeDistributed
-# import tensorflow as tf
-
-# tf.config.set_visible_devices([], 'GPU')
 
 
 class BaselineModel:
