@@ -4,6 +4,7 @@ from tensorflow.keras.callbacks import EarlyStopping, TensorBoard, ReduceLROnPla
 
 from baseline_model import BaselineModel
 from create_dataset import MitDBDataset
+from el_giga_model import ElGigaModel
 
 
 class Config:
@@ -20,7 +21,8 @@ class Config:
 
 def train():
     config = Config()
-    model = BaselineModel(config).build()
+    # model = BaselineModel(config).build()
+    model = ElGigaModel(config).build()
 
     mit_dataset = MitDBDataset('./data/mitdb/1.0.0/', load=True)
     X, y = mit_dataset.load_dataset(feature=config.feature)
@@ -49,4 +51,3 @@ def train():
 
 if __name__ == '__main__':
     train()
-
