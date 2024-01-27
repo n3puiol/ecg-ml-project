@@ -1,4 +1,6 @@
-# ecg-ml-project
+# Classifying pathological heartbeats from ECG signals
+
+I strongly recommend understanding the dataset. An explanation can be found [here](https://physionet.org/physiobank/database/html/mitdbdir/intro.htm).
 
 ## Prerequisites
 
