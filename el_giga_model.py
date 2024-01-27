@@ -1,7 +1,9 @@
-from keras import Input, Model
-from keras.src.layers import TimeDistributed, Conv1D
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import SimpleRNN, Dense, Embedding
+from keras import Input, Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense, BatchNormalization
+
+# import tensorflow as tf
+#
+# tf.config.set_visible_devices([], 'GPU')
 
 
 class ElGigaModel:
@@ -14,21 +16,17 @@ class ElGigaModel:
         self.classes = ['N', 'V', '/', 'A', 'F', '~']
 
     def build(self):
-        inputs = Input(shape=(self.INPUT_SIZE, 1), name='input')
-        rnn = SimpleRNN(128, input_shape=(self.INPUT_SIZE, 1), return_sequences=True)
-        layer = rnn(inputs)
-        layer = Conv1D(filters=self.FILTER_LENGTH,
-                       kernel_size=self.KERNEL_SIZE,
-                       padding='same',
-                       strides=1,
-                       kernel_initializer='he_normal')(layer)
-        dense = Dense(len(self.classes), activation='softmax')
-
-        outputs = TimeDistributed(dense)(layer)
-        model = Model(inputs=inputs, outputs=outputs)
+        model = Sequential([
+            Input(shape=(self.INPUT_SIZE, 1), name='input'),
+            SimpleRNN(128, input_shape=(len(self.classes), 1), return_sequences=True),
+            # SimpleRNN(64, return_sequences=True),
+            # SimpleRNN(32, return_sequences=True),
+            SimpleRNN(128),
+            Dense(len(self.classes), activation='softmax'),
+            # BatchNormalization(),
+            # Reshape((1, -1))
+        ])
 
         model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
-        print(model.summary())
 
         return model
