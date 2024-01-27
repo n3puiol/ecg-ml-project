@@ -23,6 +23,7 @@ def train():
     config = Config()
     # model = BaselineModel(config).build()
     model = ElGigaModel(config).build()
+    print(model.summary())
 
     mit_dataset = MitDBDataset('./data/mitdb/1.0.0/', load=True)
     X, y = mit_dataset.load_dataset(feature=config.feature)
@@ -36,10 +37,10 @@ def train():
         ModelCheckpoint('models/{}-latest.hdf5'.format(config.feature), monitor='val_loss', save_best_only=False,
                         verbose=1, save_freq=10)
     ]
-    y = np.expand_dims(y, axis=2)
-    y_val = np.expand_dims(y_val, axis=2)
-    y = np.swapaxes(y, 1, 2)
-    y_val = np.swapaxes(y_val, 1, 2)
+    # y = np.expand_dims(y, axis=2)
+    # y = np.swapaxes(y, 1, 2)
+    # y_val = np.expand_dims(y_val, axis=2)
+    # y_val = np.swapaxes(y_val, 1, 2)
 
     model.fit(Xe, y,
               validation_data=(X_val, y_val),
