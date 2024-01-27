@@ -63,18 +63,6 @@ class MitDBDataset:
             hf.create_dataset(feature + '_label', data=datalabel[feature])
 
     def load_dataset(self, feature='MLII'):
-        # trainData = ddio.load('dataset/train.hdf5')
-        # testlabelData= ddio.load('dataset/trainlabel.hdf5')
-        # X = np.float32(trainData[feature])
-        # y = np.float32(testlabelData[feature])
-        # att = np.concatenate((X,y), axis=1)
-        # np.random.shuffle(att)
-        # X , y = att[:,:input_size], att[:, input_size:]
-        # valData = ddio.load('dataset/test.hdf5')
-        # vallabelData= ddio.load('dataset/testlabel.hdf5')
-        # Xval = np.float32(valData[feature])
-        # yval = np.float32(vallabelData[feature])
-        # return (X, y, Xval, yval)
         hf = h5py.File(self.path + 'dataset.hdf5', 'r')
         data = hf[feature + '_data'][:]
         label = hf[feature + '_label'][:]
@@ -85,12 +73,6 @@ class MitDBDataset:
         X, y = att[:, :self.INPUT_SIZE], att[:, self.INPUT_SIZE:]
         hf.close()
         return X, y
-        # data = dict()
-        # label = dict()
-        # for feature in self.FEATURES:
-        #     data[feature] = hf[feature + '_data'][:]
-        #     label[feature] = hf[feature + '_label'][:]
-        # return data, label
 
 
 if __name__ == "__main__":
