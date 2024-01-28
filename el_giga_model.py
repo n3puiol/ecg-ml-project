@@ -1,5 +1,6 @@
 from keras import Input, Sequential
-from tensorflow.keras.layers import SimpleRNN, Dense, BatchNormalization
+from keras.src.layers import Conv1D, Activation, MaxPooling1D, Flatten
+from tensorflow.keras.layers import SimpleRNN, Dense, BatchNormalization, Dropout
 
 import tensorflow as tf
 
@@ -17,8 +18,16 @@ class ElGigaModel:
     def build(self):
         model = Sequential([
             Input(shape=(self.INPUT_SIZE, 1), name='input'),
+            Conv1D(filters=self.FILTER_LENGTH, kernel_size=self.KERNEL_SIZE, padding='same', strides=1, kernel_initializer='he_normal'),
+            BatchNormalization(),
+            Activation('relu'),
+            MaxPooling1D(pool_size=1, strides=1),
+            Dropout(self.DROP_RATE),
             SimpleRNN(128, input_shape=(len(self.CLASSES), 1), return_sequences=True),
-            SimpleRNN(128),
+            SimpleRNN(64, input_shape=(len(self.CLASSES), 1), return_sequences=True),
+            SimpleRNN(64, input_shape=(len(self.CLASSES), 1), return_sequences=True),
+            SimpleRNN(64, input_shape=(len(self.CLASSES), 1), return_sequences=True),
+            SimpleRNN(32),
             Dense(len(self.CLASSES), activation='softmax'),
         ])
 
