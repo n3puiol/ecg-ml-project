@@ -1,7 +1,5 @@
 class Patient:
-    def __init__(self, annotations=None):
-        if annotations is None:
-            annotations = []
+    def __init__(self, annotations):
         self.annotations = annotations
 
 
@@ -10,6 +8,6 @@ class Patient207(Patient):
         super().__init__(['L', 'A', 'V', '!', 'E'])
 
 
-class Patient209:
+class Patient209(Patient):
     def __init__(self):
-        super().__init__(['A'])
+        super().__init__(['L', 'A', 'V', '!', 'E'])

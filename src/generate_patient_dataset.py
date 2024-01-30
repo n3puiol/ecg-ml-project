@@ -1,9 +1,9 @@
 import argparse
 import csv
 
-from src.patient import Patient, Patient207, Patient209
-from src.annotation import Annotation
-from src.ecgreading import ECGReading
+from patient import Patient, Patient207, Patient209
+from annotation import Annotation
+from ecgreading import ECGReading
 
 
 class GeneratePatientDataset:
