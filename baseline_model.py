@@ -14,6 +14,8 @@ class BaselineModel:
     https://github.com/awni/ecg/blob/master/ecg/network.py
     and
     https://github.com/fernandoandreotti/cinc-challenge2017/blob/master/deeplearn-approach/train_model.py
+
+    Classes treated: 'N', 'V', '/', 'A', 'F','~'
     """
 
     def __init__(self, config):
@@ -22,9 +24,6 @@ class BaselineModel:
         self.KERNEL_SIZE = config.kernel_size
         self.DROP_RATE = config.drop_rate
         self.CLASSES = config.classes
-
-        # self.CLASSES = ['N', 'V', '/', 'A', 'F',
-        #                 '~']  # ,'L','R',f','j','E','a']#,'J','Q','e','S'] are too few or not in the trainset, so excluded out
 
     def build(self):
         inputs = Input(shape=(self.INPUT_SIZE, 1), name='input')
