@@ -1,41 +1,28 @@
 import argparse
 import csv
 
-
-class ECGReading:
-    def __init__(self, ml_ii: str, v_1: str):
-        self.ml_ii = ml_ii
-        self.v_1 = v_1
-
-    def __str__(self):
-        return f"(MLII: {self.ml_ii}, V1: {self.v_1})"
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class Annotation:
-    def __init__(self, sample_number: str, time: str, annotation: str):
-        self.sample_number = sample_number
-        self.time = time
-        self.annotation = annotation
-
-    def __str__(self):
-        return f"Sample #: {self.sample_number}, Time: {self.time}, Annotation: {self.annotation}"
-
-    def __repr__(self):
-        return self.__str__()
+from src.patient import Patient, Patient207, Patient209
+from src.annotation import Annotation
+from src.ecgreading import ECGReading
 
 
 class GeneratePatientDataset:
-    def __init__(self, patient_id):
-        self.patient_id = patient_id
-        self.path = 'data/' + patient_id
 
-        self.FEATURES = ['MLII', 'V1']
+    def __init__(self, patient_id):
+
+        if patient_id not in ['207', '209']:
+            raise ValueError("Patient ID must be 207 or 209")
+
+        self.patient_id = patient_id
+
+        self.patient: Patient \
+            = Patient209() if patient_id == '209' else Patient207()
+
+        self.path = 'data/' + patient_id
 
         self.readings: dict[str, ECGReading] = self._sample_number_to_reading()
         self.annotations: dict[str, Annotation] = self._sample_number_to_annotation()
+
         self.mapping: dict[tuple, Annotation] = self._ecg_reading_to_annotation_map()
 
     def _sample_number_to_reading(self) -> dict[str, ECGReading]:
@@ -62,6 +49,10 @@ class GeneratePatientDataset:
                     i += 1
                     continue
                 time, sample_number, annotation = row
+
+                if annotation not in self.patient.annotations:
+                    continue
+
                 annotation_dict[sample_number] = Annotation(sample_number, time, annotation)
 
         return annotation_dict
@@ -111,4 +102,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     GeneratePatientDataset(args.patient_id)
-
