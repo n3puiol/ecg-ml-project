@@ -101,9 +101,12 @@ class GeneratePatientDataset:
             print(sample, annotation.time, annotation.annotation)
 
     def display_mapping(self):
-        key, val = list(self.mapping.items())[0]
-        print(key)
-        print(val)
+
+        for key, val in self.mapping.items():
+            print(key)
+            print(val)
+
+            print("========")
 
 
 if __name__ == '__main__':
