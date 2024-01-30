@@ -36,11 +36,7 @@ class GeneratePatientDataset:
 
         self.readings: dict[str, ECGReading] = self._sample_number_to_reading()
         self.annotations: dict[str, Annotation] = self._sample_number_to_annotation()
-        self.mapping: dict[list, Annotation] = self.ecg_reading_to_annotation_map()
-
-        # self.display_readings()
-        # self.display_annotations()
-        self.display_mapping()
+        self.mapping: dict[tuple, Annotation] = self._ecg_reading_to_annotation_map()
 
     def _sample_number_to_reading(self) -> dict[str, ECGReading]:
         reading_dict = dict()
@@ -70,7 +66,7 @@ class GeneratePatientDataset:
 
         return annotation_dict
 
-    def ecg_reading_to_annotation_map(self) -> dict[tuple, Annotation]:
+    def _ecg_reading_to_annotation_map(self) -> dict[tuple, Annotation]:
         mapping = dict()
         seq_numbers = [int(sample_number) for sample_number in self.annotations.keys()]
 
@@ -115,3 +111,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     GeneratePatientDataset(args.patient_id)
+
