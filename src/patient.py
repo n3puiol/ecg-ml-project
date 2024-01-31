@@ -5,9 +5,9 @@ class Patient:
 
 class Patient207(Patient):
     def __init__(self):
-        super().__init__(['L', 'A', 'V', '!', 'E'])
+        super().__init__(['L', 'A', 'V', '!', 'E', 'N'])
 
 
 class Patient209(Patient):
     def __init__(self):
-        super().__init__(['L', 'A', 'V', '!', 'E'])
+        super().__init__(['A', 'N'])
