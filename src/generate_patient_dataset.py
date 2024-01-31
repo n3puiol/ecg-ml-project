@@ -18,7 +18,7 @@ class GeneratePatientDataset:
         self.patient: Patient \
             = Patient209() if patient_id == '209' else Patient207()
 
-        self.path = 'data/' + patient_id
+        self.path = '../data/' + patient_id
 
         self.readings: dict[str, ECGReading] = self._sample_number_to_reading()
         self.annotations: dict[str, Annotation] = self._sample_number_to_annotation()
