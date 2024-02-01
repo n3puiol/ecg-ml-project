@@ -1,6 +1,7 @@
 import argparse
 import csv
 from scipy.signal import butter, filtfilt
+from matplotlib import pyplot as plt
 
 from patient import Patient, Patient207, Patient209
 from annotation import Annotation
@@ -22,6 +23,9 @@ class GeneratePatientDataset:
         self.path = path + patient_id
 
         self.readings: dict[str, ECGReading] = self._sample_number_to_reading_map()
+        self.all_readings = list(self.readings.values())
+        self.all_ml_ii = [int(reading.ml_ii) for reading in self.all_readings]
+        self.all_v_1 = [int(reading.v_1) for reading in self.all_readings]
         self.annotations: dict[tuple, Annotation] = self._sample_number_to_annotation_map()
 
         self.mapping: dict[tuple, Annotation] = self._ecg_reading_to_annotation_map(self.readings.items())
@@ -73,17 +77,11 @@ class GeneratePatientDataset:
         return filtfilt(b, a, sequence)
 
     def _butter_filtered_reading(self):
-        readings = list(self.readings.values())
-        ml_ii = [int(reading.ml_ii) for reading in readings]
-        v_1 = [int(reading.v_1) for reading in readings]
-
-        ml_ii_filtered = self._butter_filter(ml_ii)
-        v_1_filtered = self._butter_filter(v_1)
+        ml_ii_filtered = self._butter_filter(self.all_ml_ii)
+        v_1_filtered = self._butter_filter(self.all_v_1)
 
         zipped_ecg_reading = list(zip(ml_ii_filtered, v_1_filtered))
-        # (ml_ii, v_1)
         zipped_sample_ecg_reading = list(zip(self.readings.keys(), zipped_ecg_reading))
-        # (sample_number, (filtered_ml_ii, f_v_1))
 
         return self._ecg_reading_to_annotation_map(zipped_sample_ecg_reading)
 
@@ -127,12 +125,35 @@ class GeneratePatientDataset:
 
             print("========")
 
+    def plot_all_readings(self, up_to=None, save=False):
+        if up_to is None:
+            up_to = len(self.all_ml_ii)
+
+        plt.plot(self.all_ml_ii[:up_to], color='r')
+        plt.title(f'Patient {self.patient_id} MLII Readings (up to {up_to} readings)')
+        plt.xlabel('Sample Number')
+        plt.ylabel('MLII Reading (mV)')
+        if save:
+            plt.savefig(f'figs/patient_{self.patient_id}_ml_ii.png')
+        plt.show()
+
+        plt.plot(self.all_v_1[:up_to], color='c')
+        plt.title(f'Patient {self.patient_id} V1 Readings (up to {up_to} readings)')
+        plt.xlabel('Sample Number')
+        plt.ylabel('V1 Reading (mV)')
+        if save:
+            plt.savefig(f'figs/patient_{self.patient_id}_v_1.png')
+        plt.show()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generate a dataset for a patient')
     parser.add_argument('patient_id', type=str, help='The patient ID to generate a dataset for')
     parser.add_argument('path', type=str, help='The path to the data folder')
+    parser.add_argument('--plot', action='store_true', help='Plot the readings')
+    parser.add_argument('--save', action='store_true', help='Save the plots')
     args = parser.parse_args()
 
     data = GeneratePatientDataset(args.patient_id, args.path)
-    print(len(list(data.filtered_mapping.keys())[0]))
+    if args.plot or args.save:
+        data.plot_all_readings(3000, args.save)
