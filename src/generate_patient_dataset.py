@@ -77,10 +77,10 @@ class GeneratePatientDataset:
         return filtfilt(b, a, sequence)
 
     def _butter_filtered_reading(self):
-        ml_ii_filtered = self._butter_filter(self.all_ml_ii)
-        v_1_filtered = self._butter_filter(self.all_v_1)
+        self.ml_ii_filtered = self._butter_filter(self.all_ml_ii)
+        self.v_1_filtered = self._butter_filter(self.all_v_1)
 
-        zipped_ecg_reading = list(zip(ml_ii_filtered, v_1_filtered))
+        zipped_ecg_reading = list(zip(self.ml_ii_filtered, self.v_1_filtered))
         zipped_sample_ecg_reading = list(zip(self.readings.keys(), zipped_ecg_reading))
 
         return self._ecg_reading_to_annotation_map(zipped_sample_ecg_reading)
@@ -129,20 +129,35 @@ class GeneratePatientDataset:
         if up_to is None:
             up_to = len(self.all_ml_ii)
 
-        plt.plot(self.all_ml_ii[:up_to], color='r')
-        plt.title(f'Patient {self.patient_id} MLII Readings (up to {up_to} readings)')
-        plt.xlabel('Sample Number')
-        plt.ylabel('MLII Reading (mV)')
-        if save:
-            plt.savefig(f'figs/patient_{self.patient_id}_ml_ii.png')
-        plt.show()
+        figure, ax = plt.subplots(2, 1)
+        figure1, ax1 = plt.subplots(2, 1)
+        ax[0].plot(self.all_ml_ii[:up_to], color='r')
+        ax[0].set_title(f'Patient {self.patient_id} MLII Readings (up to {up_to} readings)')
+        ax[0].set_xlabel('Sample Number')
+        ax[0].set_ylabel('MLII Reading (mV)')
 
-        plt.plot(self.all_v_1[:up_to], color='c')
-        plt.title(f'Patient {self.patient_id} V1 Readings (up to {up_to} readings)')
-        plt.xlabel('Sample Number')
-        plt.ylabel('V1 Reading (mV)')
+        ax[1].plot(self.all_v_1[:up_to], color='c')
+        ax[1].set_title(f'Patient {self.patient_id} V1 Readings (up to {up_to} readings)')
+        ax[1].set_xlabel('Sample Number')
+        ax[1].set_ylabel('V1 Reading (mV)')
+
+        ax1[0].plot(self.ml_ii_filtered[:up_to], color='m')
+        ax1[0].set_title(f'Patient {self.patient_id} butter filtered MLII Readings (up to {up_to} readings)')
+        ax1[0].set_xlabel('Sample Number')
+        ax1[0].set_ylabel('MLII Reading (mV)')
+
+        ax1[1].plot(self.v_1_filtered[:up_to], color='y')
+        ax1[1].set_title(f'Patient {self.patient_id} butter filtered V1 Readings (up to {up_to} readings)')
+        ax1[1].set_xlabel('Sample Number')
+        ax1[1].set_ylabel('V1 Reading (mV)')
+
+        figure.tight_layout()
+        figure1.tight_layout()
+
         if save:
-            plt.savefig(f'figs/patient_{self.patient_id}_v_1.png')
+            figure.savefig(f'figs/patient_{self.patient_id}_readings.png')
+            figure1.savefig(f'figs/patient_{self.patient_id}_filtered_readings.png')
+
         plt.show()
 
 
